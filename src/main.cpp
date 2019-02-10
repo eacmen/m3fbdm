@@ -206,13 +206,9 @@ int main()
     while (true) {
         // read chars from USB
         // send received messages to the pc over USB connection
-        // This function displays any CAN messages that are 'missed' by the other functions
-        // Can messages might be 'missed' because they are received after a 'timeout' period
-        // or because they weren't expected, e.g. if the T5 ECU resets for some reason
-        t5_can_show_can_message();
         if (pc.readable()) {
             // turn Error LED off for next command
-            led4 = 0;
+            led2 = 0;
             rx_char = pc.getc();
             switch (rx_char) {
                     // end-of-command reached
@@ -227,7 +223,7 @@ int main()
                     *cmd_buffer = '\0';
                     // light up LED
 //                    ret == TERM_OK ? led_on(LED_ACT) : led_on(LED_ERR);
-                    ret == TERM_OK ? led3 = 1 : led4 = 1;
+                    ret == TERM_OK ? led1 = 1 : led2 = 1;
                     break;
                     // another command char
                 default:

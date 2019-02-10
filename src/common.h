@@ -57,9 +57,6 @@ accept liability for any damage arising from its use.
 
 #define ERR_COUNT           255            ///< maximum error cycles
 
-#define FILE_BUF_LENGTH      0x1000              ///< file buffer size
-//static char file_buffer[FILE_BUF_LENGTH];     ///< file buffer
-
 // FLASH chip manufacturer id values
 #define AMD                 0x01
 #define CSI                 0x31

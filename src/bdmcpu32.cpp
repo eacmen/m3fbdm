@@ -68,18 +68,13 @@ accept liability for any damage arising from its use.
 #define RAM_BB_BASE 0x22000000
 #define PERIHERALS_BASE 0x40000000
 #define PERIHERALS_BB_BASE 0x42000000
-#define LPC1768_AHB_BANK_0  0x2007C000
-#define LPC1768_AHB_BANK_1  0x20080000
-#define LPC1768_AHB_BANK_SIZE 0x00004000
-#define LPC1768_PERIPH_BANK 0x2009C000
-#define LPC1768_PERIPH_SIZE 0x00004000
 
-#define varBit(Variable,BitNumber) (*(uint32_t *) (RAM_BB_BASE | (((uint32_t)&Variable - RAM_BASE) << 5) | ((BitNumber) << 2)))
-#define periphBit(Peripheral,BitNumber) (*(uint32_t *) (PERIHERALS_BB_BASE | (((uint32_t)&Peripheral - PERIHERALS_BASE) << 5) | ((BitNumber) << 2)))
+//#define varBit(Variable,BitNumber) (*(uint32_t *) (RAM_BB_BASE | (((uint32_t)&Variable - RAM_BASE) << 5) | ((BitNumber) << 2)))
+//#define periphBit(Peripheral,BitNumber) (*(uint32_t *) (PERIHERALS_BB_BASE | (((uint32_t)&Peripheral - PERIHERALS_BASE) << 5) | ((BitNumber) << 2)))
 #define bitAlias(Variable,BitNumber) (*(uint32_t *) (RAM_BB_BASE | (((uint32_t)&Variable - RAM_BASE) << 5) | ((BitNumber) << 2)))
 
 // static variables
-__attribute__((section("AHBSRAM0"))) static uint32_t bdm_response = 0;      ///< result of BDM read/write operation
+static uint32_t bdm_response = 0;      ///< result of BDM read/write operation
 
 // private functions
 bool bdm_read(uint32_t* result, uint16_t cmd, const uint32_t* addr);
@@ -1343,6 +1338,7 @@ bool bdm_ready (uint16_t next_cmd)
 void bdm_clk_mode(bdm_speed mode)
 {
     switch (mode) {
+#if 0
         case NITROUS:
             bdm_clk = &bdm_clk_nitrous;
             break;
@@ -1352,6 +1348,7 @@ void bdm_clk_mode(bdm_speed mode)
         case FAST:
             bdm_clk = &bdm_clk_fast;
             break;
+#endif
         case SLOW:
         default:
             bdm_clk = &bdm_clk_slow;
@@ -1444,9 +1441,10 @@ void bdm_clk_slow(uint16_t value, uint8_t num_bits) {
 
 void bdm_clk_fast(uint16_t value, uint8_t num_bits)
 {
-
+#if 0
     //Make DSI an output
-    LPC_GPIO2->FIODIR |= (1 << 2);
+    PIN_DSI.output( )
+    // LPC_GPIO2->FIODIR |= (1 << 2);
     // clock the value via BDM
     bdm_response = ((uint32_t)value) << (32 - num_bits);
     // Clock BDM Data in from DSO and out to DSI
@@ -1465,6 +1463,7 @@ void bdm_clk_fast(uint16_t value, uint8_t num_bits)
     }
     //Make DSI an input
     LPC_GPIO2->FIODIR &= ~(1 << 2);
+#endif
 }
 //-----------------------------------------------------------------------------
 
@@ -1487,6 +1486,7 @@ void bdm_clk_fast(uint16_t value, uint8_t num_bits)
 
 void bdm_clk_turbo(uint16_t value, uint8_t num_bits)
 {
+#if 0
     //Make DSI an output
     LPC_GPIO2->FIODIR |= (1 << 2);
     bdm_response = (uint32_t)value;
@@ -1511,6 +1511,7 @@ void bdm_clk_turbo(uint16_t value, uint8_t num_bits)
     }
     //Make DSI an input
     LPC_GPIO2->FIODIR &= ~(1 << 2);
+#endif
 }
 //-----------------------------------------------------------------------------
 
@@ -1527,6 +1528,7 @@ void bdm_clk_turbo(uint16_t value, uint8_t num_bits)
 
 void bdm_clk_nitrous(uint16_t value, uint8_t num_bits)
 {
+#if 0
     //Make DSI an output
     LPC_GPIO2->FIODIR |= (1 << 2);
     bdm_response = (uint32_t)value;
@@ -1551,6 +1553,7 @@ void bdm_clk_nitrous(uint16_t value, uint8_t num_bits)
     }
     //Make DSI an input
     LPC_GPIO2->FIODIR &= ~(1 << 2);
+#endif
 }
 //-----------------------------------------------------------------------------
 

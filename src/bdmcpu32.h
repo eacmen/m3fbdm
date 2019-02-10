@@ -30,16 +30,16 @@ accept liability for any damage arising from its use.
 
 // MCU status macros
 #ifndef IGNORE_VCC_PIN
-//    #define IS_CONNECTED    (PIN_PWR)
-#define IS_CONNECTED    (bool)((LPC_GPIO1->FIOPIN) & (1 << 30))     // PIN_POWER is p19 p1.30
+#define IS_CONNECTED    (PIN_PWR)
+//#define IS_CONNECTED    (bool)((LPC_GPIO1->FIOPIN) & (1 << 30))     // PIN_POWER is p19 p1.30
 #else
 #define IS_CONNECTED    true
 #endif    // IGNORE_VCC_PIN
 
-//#define IN_BDM              (PIN_FREEZE)
-#define IN_BDM              (bool)((LPC_GPIO2->FIOPIN) & (1 << 0))      // FREEZE is p26 P2.0
-//#define IS_RUNNING          (PIN_RESET && !IN_BDM)
-#define IS_RUNNING          ((bool)((LPC_GPIO2->FIOPIN) & (1 << 3)) && !IN_BDM)          // PIN_RESET is P23 P2.3
+#define IN_BDM              (PIN_FREEZE)
+// #define IN_BDM              (bool)((LPC_GPIO2->FIOPIN) & (1 << 0))      // FREEZE is p26 P2.0
+#define IS_RUNNING          (PIN_RESET && !IN_BDM)
+//#define IS_RUNNING          ((bool)((LPC_GPIO2->FIOPIN) & (1 << 3)) && !IN_BDM)          // PIN_RESET is P23 P2.3
 
 // MCU management
 uint8_t stop_chip();

@@ -21,9 +21,14 @@ Timer timer;
 // A timer for checking that timeout periods aren't exceeded
 Timer timeout;
 
+#define SD_MOSI PTD2
+#define SD_MISO PTD3
+#define SD_SCLK PTD1
+#define SD_CS   PTD0
+
 
 // Need to create this to be able to read and write files on the mbed 'disk'
-SDFileSystem sdard("sdcard");
+SDFileSystem sdard(SD_MOSI, SD_MISO, SD_SCLK, SD_CS, "sdcard");
 
 // MASTER BDM1 Connector Pinout
 DigitalInOut    PIN_BERR(PTB11);     // double bus fault input - will be an input when it is working properly
