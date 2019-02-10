@@ -92,7 +92,7 @@ char *StrAddc (char *s, const char c) {
 
 // Find the end of the string 's'
   while (*s)
-    *s++;
+    s++;
 // add the new character
   *s++ = c;
 // put the end of string character at its new position

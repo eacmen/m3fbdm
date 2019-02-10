@@ -60,13 +60,15 @@ bool bdmLoadMemory(uint8_t dataArray[], uint32_t startAddress, uint32_t dataArra
     // Send the first 1-4 bytes as efficiently as possible over BDM
     switch (driverSize % 4) {
         case 3:
-            driverWord = (dataArray[driverOffset++] << 8) | dataArray[driverOffset++];
+            driverWord = (dataArray[driverOffset] << 8) | dataArray[driverOffset+1];
+            driverOffset += 2;
             if(memwrite_word(&startAddress, driverWord) != TERM_OK) return false;
             driverByte = dataArray[driverOffset++];
             if(memfill_byte(driverByte) != TERM_OK) return false;
             break;
         case 2:
-            driverWord = (dataArray[driverOffset++] << 8) | dataArray[driverOffset++];
+            driverWord = (dataArray[driverOffset] << 8) | dataArray[driverOffset+1];
+            driverOffset += 2;
             if(memwrite_word(&startAddress, driverWord) != TERM_OK) return false;
             break;
         case 1:
@@ -125,7 +127,7 @@ bool bdmRunDriver(uint32_t addr, uint32_t maxtime)
     for (uint32_t debounce = 0; debounce < 5; debounce++) {
         while (IS_RUNNING) {
             debounce = 0;
-            if (timeout.read_ms() > maxtime) {
+            if ((uint32_t)timeout.read_ms() > maxtime) {
                 printf("Driver did not return to BDM mode.\r\n");
                 timeout.stop();
                 return false;
@@ -236,7 +238,7 @@ bool bdmSyscallPuts()
     uint32_t i = 0;
     do {
         if (memread_byte((uint8_t*)(bdm_string+i), &bdm_string_address) != TERM_OK) {
-            printf("Failed to read BDM memory at address 0x%08x.\r\n", bdm_string_address);
+            printf("Failed to read BDM memory at address 0x%08x.\r\n", (unsigned) bdm_string_address);
             return false;
         }
         bdm_string_address++;
@@ -316,15 +318,15 @@ bool bdmSyscallFopen(void)
     i = 0;
     // a loop to read chars from BDM into a string
     do {
-        if (memread_byte((uint8_t*)filename_string[i], &bdm_filename_address) != TERM_OK) {
-            printf("Failed to read BDM memory at address 0x%08x.\r\n", bdm_filename_address);
+        if (memread_byte((uint8_t*)&(filename_string[i]), &bdm_filename_address) != TERM_OK) {
+            printf("Failed to read BDM memory at address 0x%08x.\r\n", (unsigned)bdm_filename_address);
             return false;
         }
         bdm_filename_address++;
     } while ( (filename_string[i++] != 0x0) && (i < sizeof(filename_string)) );
     do {
-        if (memread_byte((uint8_t*)filemode_string[i], &bdm_filemode_address) != TERM_OK) {
-            printf("Failed to read BDM memory at address 0x%08x.\r\n", bdm_filemode_address);
+        if (memread_byte((uint8_t*)&(filemode_string[i]), &bdm_filemode_address) != TERM_OK) {
+            printf("Failed to read BDM memory at address 0x%08x.\r\n", (unsigned)bdm_filemode_address);
             return false;
         }
         bdm_filemode_address++;
@@ -352,7 +354,7 @@ bool bdmSyscallFclose(void)
 
 bool bdmSyscallFread(void)
 {
-    uint32_t bdm_byte_count, bdm_buffer_address, bdm_file_handle = NULL;
+    uint32_t bdm_byte_count, bdm_buffer_address, bdm_file_handle = 0;
     if (adreg_read(&bdm_file_handle, 0x1) != TERM_OK) {
         printf("Failed to read BDM register.\r\n");
         return false;
@@ -394,7 +396,7 @@ bool bdmSyscallFtell(void)
 
 bool bdmSyscallFseek(void)
 {
-    uint32_t bdm_byte_offset, bdm_file_origin, bdm_file_handle = NULL;
+    uint32_t bdm_byte_offset, bdm_file_origin, bdm_file_handle = 0;
     if (adreg_read(&bdm_file_handle, 0x1) != TERM_OK) {
         printf("Failed to read BDM register.\r\n");
         return false;

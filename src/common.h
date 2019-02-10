@@ -44,6 +44,9 @@ accept liability for any damage arising from its use.
 #define TRUE 1
 #define FALSE 0
 
+#define FILE_BUF_LENGTH      0x1000              ///< file buffer size
+extern char file_buffer[FILE_BUF_LENGTH];     ///< file buffer
+
 
 // bit macros
 #define SETBIT(x,y)         (x |= (y))                ///< set bit y in byte x

@@ -22,6 +22,8 @@ accept liability for any damage arising from its use.
 
 #include "bdmtrionic.h"
 
+char file_buffer[FILE_BUF_LENGTH];
+
 // structure for command address/value pairs
 struct mempair_t {
     uint32_t addr;            ///< target address
@@ -106,7 +108,7 @@ uint8_t dump_flash(const uint32_t* start_addr, const uint32_t* end_addr)
         }
 
         // send memory value to host
-        printf("%08X", value);
+        printf("%08X", (unsigned)value);
         printf("\r\n");
 
         // add the terminating character
@@ -355,7 +357,7 @@ uint8_t write_flash(const char* flash_type, const uint32_t* start_addr)
             ret = false;
             break;
         }
-        printf("long value %08x \r\n", long_value);
+        printf("long value %08x \r\n", (unsigned)long_value);
 
         // write the first word
         printf("write the first word\r\n");
@@ -486,25 +488,37 @@ uint8_t flash_trionic()
     if (flash_size == T52FLASHSIZE && (file_size != T52FLASHSIZE || stack_long != T5POINTER)) {
         fclose(fp);
         printf("The BIN file does not appear to be for a T5.2 ECU :-(\r\n");
-        printf("BIN file size: %#10x, FLASH chip size: %#010x, Pointer: %#10x.\r\n", file_size, flash_size, stack_long);
+        printf("BIN file size: %#10x, FLASH chip size: %#010x, Pointer: %#10x.\r\n", 
+            (unsigned int)file_size, 
+            (unsigned int)flash_size, 
+            (unsigned int)stack_long);
         return TERM_ERR;
     }
     if (flash_size == T55FLASHSIZE && (file_size != T55FLASHSIZE || stack_long != T5POINTER)) {
         fclose(fp);
         printf("The BIN file does not appear to be for a T5.5 ECU :-(\r\n");
-        printf("BIN file size: %#10x, FLASH chip size: %#010x, Pointer: %#10x.\r\n", file_size, flash_size, stack_long);
+        printf("BIN file size: %#10x, FLASH chip size: %#010x, Pointer: %#10x.\r\n", 
+            (unsigned int)file_size, 
+            (unsigned int)flash_size, 
+            (unsigned int)stack_long);
         return TERM_ERR;
     }
     if (flash_size == T7FLASHSIZE && (file_size != T7FLASHSIZE || stack_long != T7POINTER)) {
         fclose(fp);
         printf("The BIN file does not appear to be for a T7 ECU :-(\r\n");
-        printf("BIN file size: %#10x, FLASH chip size: %#010x, Pointer: %#10x.\r\n", file_size, flash_size, stack_long);
+        printf("BIN file size: %#10x, FLASH chip size: %#010x, Pointer: %#10x.\r\n", 
+            (unsigned int)file_size, 
+            (unsigned int)flash_size, 
+            (unsigned int)stack_long);
         return TERM_ERR;
     }
     if (flash_size == T8FLASHSIZE && (file_size != T8FLASHSIZE || stack_long != T8POINTER)) {
         fclose(fp);
         printf("The BIN file does not appear to be for a T8 ECU :-(\r\n");
-        printf("BIN file size: %#10x, FLASH chip size: %#010x, Pointer: %#10x.\r\n", file_size, flash_size, stack_long);
+        printf("BIN file size: %#10x, FLASH chip size: %#010x, Pointer: %#10x.\r\n", 
+            (unsigned int)file_size, 
+            (unsigned int)flash_size, 
+            (unsigned int)stack_long);
         return TERM_ERR;
     }
 
@@ -1317,7 +1331,7 @@ uint8_t flash_trionic()
     } else {
         printf("\r\n");
         printf("Programming took %#.1f seconds.\r\n",timer.read());
-        printf("WARNING: Oh dear, I couldn't program the FLASH at address 0x%08x.\r\n", curr_addr);
+        printf("WARNING: Oh dear, I couldn't program the FLASH at address 0x%08x.\r\n", (unsigned)curr_addr);
     }
 
     // reset flash
@@ -1472,7 +1486,7 @@ bool run_bdm_driver(uint32_t addr, uint32_t maxtime)
     for (uint32_t debounce = 0; debounce < 5; debounce++) {
         while (IS_RUNNING) {
             debounce = 0;
-            if (timeout.read_ms() > maxtime) {
+            if ((uint32_t)timeout.read_ms() > maxtime) {
                 printf("Driver did not return to BDM mode.\r\n");
                 timeout.stop();
                 return false;
@@ -1834,7 +1848,7 @@ bool get_flash_id(uint8_t* make, uint8_t* type)
 //    *type = (uint8_t)(value >> 8);
     *make = (uint8_t)(value >> 16);
     *type = (uint8_t)(value);
-    printf("FLASH id bytes: %08x, make: %02x, type: %02x\r\n", value, *make, *type);
+    printf("FLASH id bytes: %08x, make: %02x, type: %02x\r\n", (unsigned)value, *make, *type);
     switch (*type) {
         case AMD29BL802C:
         case AMD29F400B:

@@ -87,6 +87,7 @@ static char cmd_buffer[CMD_BUF_LENGTH];     ///< command string buffer
 static uint32_t cmd_addr;                   ///< address (optional)
 static uint32_t cmd_value;                  ///< value    (optional)
 static uint32_t cmd_result;                 ///< result
+static bool verify_flash = 1;
 
 // private functions
 uint8_t execute_bdm_cmd();

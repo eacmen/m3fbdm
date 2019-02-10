@@ -27,12 +27,6 @@ accept liability for any damage arising from its use.
 #include "bdmcpu32.h"
 #include "bdmdriver.h"
 
-#define FILE_BUF_LENGTH      0x1000              ///< file buffer size
-static char file_buffer[FILE_BUF_LENGTH];     ///< file buffer
-
-// global variables
-static bool verify_flash = 1;
-
 // public functions
 uint8_t dump_flash(const uint32_t* start_addr, const uint32_t* end_addr);
 uint8_t erase_flash(const char* flash_type, const uint32_t* start_addr,
