@@ -25,22 +25,22 @@ bool bdmRunDriver(uint32_t addr, uint32_t maxtime);
 uint8_t bdmProcessSyscall(void);
 
 enum bdmSyscall {
-    QUIT = 0,
-    PUTS = 1,
-    PUTCHAR = 2,
-    GETS = 3,
-    GETCHAR = 4,
-    GETSTAT = 5,
-    FOPEN = 6,
-    FCLOSE = 7,
-    FREAD = 8,
-    FWRITE = 9,
-    FTELL = 10,
-    FSEEK = 11,
-    FGETS = 12,
-    FPUTS = 13,
-    EVAL = 14,
-    FREADSREC = 15
+    BDM_QUIT = 0,
+    BDM_PUTS = 1,
+    BDM_PUTCHAR = 2,
+    BDM_GETS = 3,
+    BDM_GETCHAR = 4,
+    BDM_GETSTAT = 5,
+    BDM_FOPEN = 6,
+    BDM_FCLOSE = 7,
+    BDM_FREAD = 8,
+    BDM_FWRITE = 9,
+    BDM_FTELL = 10,
+    BDM_FSEEK = 11,
+    BDM_FGETS = 12,
+    BDM_FPUTS = 13,
+    BDM_EVAL = 14,
+    BDM_FREADSREC = 15
 };
 
 enum bdmSyscallResult {

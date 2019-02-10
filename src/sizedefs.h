@@ -28,10 +28,10 @@ accept liability for any damage arising from its use.
 #ifndef __SIZEDEFS_H__
 #define __SIZEDEFS_H__
 
-#define BYTE unsigned char
+//#define BYTE unsigned char
 // For MBED / ARM Cortex3 use 'unsigned short' for WORD (2 bytes)
-#define WORD unsigned short
-#define LONG unsigned long
+//#define WORD unsigned short
+//#define LONG unsigned long
 
 #define uint8_t unsigned char
 #define uint16_t unsigned short

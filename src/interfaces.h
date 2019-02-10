@@ -20,31 +20,26 @@ accept liability for any damage arising from its use.
 
 extern Serial           pc;                     //Serial pc(USBTX, USBRX); // tx, rx
 
-extern CAN              can;                    
-extern DigitalOut       can_rs_pin;
-
 extern SDFileSystem     sdcard;                  
 
 extern Timer            timer;
 extern Timer            timeout;
 
 extern DigitalIn        PIN_PWR;                // power supply
-extern DigitalIn        PIN_NC;                 // connection signal
+// extern DigitalIn        PIN_NC;                 // connection signal
 extern DigitalInOut     PIN_BERR;               // double bus fault input - will be an input when it is working properly
 extern DigitalInOut     PIN_BKPT;               // breakpoint/serial clock
 extern DigitalInOut     PIN_RESET;              // reset signal
 extern DigitalInOut     PIN_DSI;                // data input (to ECU) signal
 extern DigitalIn        PIN_DSO;                // data output (from ECU) signal
 extern DigitalIn        PIN_FREEZE;             // freeze signal
-//extern DigitalIn        PIN_DS;                 // data strobe signal (not used)
+// extern DigitalIn        PIN_DS;                 // data strobe signal (not used)
 
 //LEDS
 
 // Use the LEDs to see if anything is happening
-extern DigitalOut       led1;                   // LED1 CAN send
-extern DigitalOut       led2;                   // LED2 CAN receive
-extern DigitalOut       led3;                   // BDM activity LE
-extern DigitalOut       led4;                   // Error LED
+extern DigitalOut       led1;                   // BDM activity LE
+extern DigitalOut       led2;                   // Error LED
 
 extern Ticker           ticker;
 
@@ -52,13 +47,9 @@ void leds_off(void);
 
 // led control macros
 // These macros use the fastio register method to control the leds
-#define CANTXLEDON      LPC_GPIO1->FIOSET = (1 << 18)   // Turn on the CAN bus transmitter activity led (led1, P1.18)
-#define CANTXLEDOFF     LPC_GPIO1->FIOCLR = (1 << 18)   // Turn off the CAN bus transmitter activity led (led1, P1.18)
-#define CANRXLEDON      LPC_GPIO1->FIOSET = (1 << 20)   // Turn on the CAN bus receiver activity led (led2, P1.20)
-#define CANRXLEDOFF     LPC_GPIO1->FIOCLR = (1 << 20)   // Turn off the CAN bus receiver activity led (led2, P1.20)
-#define ACTIVITYLEDON   LPC_GPIO1->FIOSET = (1 << 21)   // Turn on the activity led (led3, P1.21)
-#define ACTIVITYLEDOFF  LPC_GPIO1->FIOCLR = (1 << 21)   // Turn off the activity led (led3, P1.21)
-#define ERRORLEDON      LPC_GPIO1->FIOSET = (1 << 23)   // Turn on the ERROR led (led3, P1.23)
-#define ERRORLEDOFF     LPC_GPIO1->FIOCLR = (1 << 23)   // Turn off the ERROR led (led3, P1.23)
+#define ACTIVITYLEDON   led1 = 0   // Turn on the activity led
+#define ACTIVITYLEDOFF  led1 = 1   // Turn off the activity led
+#define ERRORLEDON      led2 = 0   // Turn on the ERROR led
+#define ERRORLEDOFF     led2 = 1   // Turn off the ERROR led
 
 #endif          // __INTERFACES_H__

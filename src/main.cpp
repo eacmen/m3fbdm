@@ -169,10 +169,6 @@ http://mbed.org/projects/cookbook/wiki/SDCard
 //
 #include "common.h"
 #include "bdm.h"
-#include "can232.h"
-#include "t5can.h"
-#include "t7can.h"
-#include "t8can.h"
 
 // constants
 #define CMD_BUF_LENGTH      32              ///< command buffer size
@@ -264,19 +260,6 @@ uint8_t execute_just4trionic_cmd()
         case 'B':
             bdm();
             return TERM_OK;
-        case 'o':
-        case 'O':
-            can232();
-            return TERM_OK;
-        case '5':
-            t5_can();
-            return TERM_OK;
-        case '7':
-            t7_can();
-            return TERM_OK;
-        case '8':
-            t8_can();
-            return TERM_OK;
         case 'h':
         case 'H':
             return TERM_OK;
@@ -301,10 +284,6 @@ void show_just4trionic_help()
     printf("Modes Menu\r\n");
     printf("=========================\r\n");
     printf("b/B - Enter BDM mode\r\n");
-    printf("o/O - Enter Lawicel CAN mode\r\n");
-    printf("5   - Enter Trionic5 CAN mode\r\n");
-    printf("7   - Enter Trionic7 CAN mode\r\n");
-    printf("8   - Enter Trionic8 CAN mode\r\n");
     printf("\r\n");
     printf("h/H - show this help menu\r\n");
     printf("\r\n");

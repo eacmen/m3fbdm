@@ -13,7 +13,6 @@ accept liability for any damage arising from its use.
 *******************************************************************************/
 
 #include "common.h"
-#include "sizedefs.h"
 
 extern char *StrCpy(char *s1, char *s2);
 extern int StrLen(char *s);

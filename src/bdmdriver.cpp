@@ -162,55 +162,55 @@ uint8_t bdmProcessSyscall(void)
     syscall &= 0xFF;
 //    printf("SYSCALL 0x%08x\r\n", syscall);
     switch (syscall) {
-        case QUIT:
+        case BDM_QUIT:
             if (adreg_read(&syscall, 0x1) != TERM_OK) {
                 printf("Failed to read BDM register.\r\n");
                 return ERROR;
             }
             return DONE;
-        case PUTS:
+        case BDM_PUTS:
             if (!bdmSyscallPuts()) return ERROR;
             break;
-        case PUTCHAR:
+        case BDM_PUTCHAR:
             if (!bdmSyscallPutchar()) return ERROR;
             break;
-        case GETS:
+        case BDM_GETS:
             if (!bdmSyscallGets()) return ERROR;
             break;
-        case GETCHAR:
+        case BDM_GETCHAR:
             if (!bdmSyscallGetchar()) return ERROR;
             break;
-        case GETSTAT:
+        case BDM_GETSTAT:
             if (!bdmSyscallGetstat()) return ERROR;
             break;
-        case FOPEN:
+        case BDM_FOPEN:
             if (!bdmSyscallFopen()) return ERROR;
             break;
-        case FCLOSE:
+        case BDM_FCLOSE:
             if (!bdmSyscallFclose()) return ERROR;
             break;
-        case FREAD:
+        case BDM_FREAD:
             if (!bdmSyscallFread()) return ERROR;
             break;
-        case FWRITE:
+        case BDM_FWRITE:
             if (!bdmSyscallFwrite()) return ERROR;
             break;
-        case FTELL:
+        case BDM_FTELL:
             if (!bdmSyscallFtell()) return ERROR;
             break;
-        case FSEEK:
+        case BDM_FSEEK:
             if (!bdmSyscallFseek()) return ERROR;
             break;
-        case FGETS:
+        case BDM_FGETS:
             if (!bdmSyscallFgets()) return ERROR;
             break;
-        case FPUTS:
+        case BDM_FPUTS:
             if (!bdmSyscallFputs()) return ERROR;
             break;
-        case EVAL:
+        case BDM_EVAL:
             if (!bdmSyscallEval()) return ERROR;
             break;
-        case FREADSREC:
+        case BDM_FREADSREC:
             if (!bdmSyscallFreadsrec()) return ERROR;
             break;
         default:

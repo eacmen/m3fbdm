@@ -120,8 +120,8 @@ void bdm()
 //    verify_flash = eeprom_read_byte(&ee_verify);
 
 // Set some initial values to help with checking if the BDM connector is plugged in
-    PIN_PWR.mode(PullDown);
-    PIN_NC.mode(PullUp);
+    //PIN_PWR.mode(PullDown);
+//    PIN_NC.mode(PullUp);
 //    PIN_DS.mode(PullUp);
     PIN_FREEZE.mode(PullUp);
     PIN_DSO.mode(PullUp);
@@ -136,7 +136,7 @@ void bdm()
         // read chars from USB
         if (pc.readable()) {
             // turn Error LED off for next command
-            led4 = 0;
+            led2 = 0;
             rx_char = pc.getc();
             switch (rx_char) {
                     // 'ESC' key to go back to mbed Just4Trionic 'home' menu
@@ -152,7 +152,7 @@ void bdm()
                     *cmd_buffer = '\0';
                     // light up LED
 //                    ret == TERM_OK ? led_on(LED_ACT) : led_on(LED_ERR);
-                    ret == TERM_OK ? led3 = 1 : led4 = 1;
+                    ret == TERM_OK ? led1 = 1 : led2 = 1;
                     break;
                     // another command char
                 default:
@@ -195,7 +195,7 @@ uint8_t execute_bdm_cmd()
                 case CMD_PINSTATUS:
 //                    printf("%02x", (BDM_PIN & 0x3f));
                     printf("PWR %d, ", PIN_PWR.read());
-                    printf("NC %d, ", PIN_NC.read());
+//                    printf("NC %d, ", PIN_NC.read());
 //                    printf("DS %d, ", PIN_DS.read());
                     printf("FREEZE %d, ", PIN_FREEZE.read());
                     printf("DSO %d, ", PIN_DSO.read());
@@ -345,7 +345,7 @@ uint8_t execute_bdm_cmd()
                             memread_long(&cmd_result, &cmd_addr) != TERM_OK) {
                         return TERM_ERR;
                     }
-                    printf("%08X", cmd_result);
+                    printf("%08X", (unsigned int)cmd_result);
                     printf("\r\n");
                     return TERM_OK;
 
@@ -375,7 +375,7 @@ uint8_t execute_bdm_cmd()
                             memdump_long(&cmd_result) != TERM_OK) {
                         return TERM_ERR;
                     }
-                    printf("%08X", cmd_result);
+                    printf("%08X", (unsigned int)cmd_result);
                     printf("\r\n");
                     return TERM_OK;
 
@@ -449,7 +449,7 @@ uint8_t execute_bdm_cmd()
                         printf("err %s line: %d\r\n", __FILE__, __LINE__ );
                         return TERM_ERR;
                     }
-                    printf("%08X", cmd_result);
+                    printf("%08X", (unsigned int)cmd_result);
                     printf("\r\n");
                     return TERM_OK;
 
@@ -466,7 +466,7 @@ uint8_t execute_bdm_cmd()
                         printf("err %s line: %d, cmd_length %d\r\n", __FILE__, __LINE__, cmd_length);
                         return TERM_ERR;
                     }
-                    printf("%08X", cmd_result);
+                    printf("%08X", (unsigned int)cmd_result);
                     printf("\r\n");
                     return TERM_OK;
 
@@ -485,7 +485,7 @@ uint8_t execute_bdm_cmd()
                             printf("err %s line: %d\r\n", __FILE__, __LINE__ );
                             return TERM_ERR;
                         }
-                        printf(" %08X", cmd_result);
+                        printf(" %08X", (unsigned int)cmd_result);
                     }
 //
                     printf("\r\n");
@@ -495,7 +495,7 @@ uint8_t execute_bdm_cmd()
                             printf("err %s line: %d\r\n", __FILE__, __LINE__ );
                             return TERM_ERR;
                         }
-                        printf(" %08X", cmd_result);
+                        printf(" %08X", (unsigned int)cmd_result);
                     }
                     printf("\r\n");
 //
@@ -503,39 +503,39 @@ uint8_t execute_bdm_cmd()
                         printf("err %s line: %d\r\n", __FILE__, __LINE__ );
                         return TERM_ERR;
                     }
-                    printf("  RPC %08X", cmd_result);
+                    printf("  RPC %08X", (unsigned int)cmd_result);
                     if (sysreg_read(&cmd_result, 0xC) != TERM_OK) {
                         printf("err %s line: %d\r\n", __FILE__, __LINE__ );
                         return TERM_ERR;
                     }
-                    printf("     USP %08X", cmd_result);
+                    printf("     USP %08X", (unsigned int)cmd_result);
                     if (sysreg_read(&cmd_result, 0xE) != TERM_OK) {
                         printf("err %s line: %d\r\n", __FILE__, __LINE__ );
                         return TERM_ERR;
                     }
-                    printf("     SFC %08X      SR 10S--210---XNZVC\r\n", cmd_result);
+                    printf("     SFC %08X      SR 10S--210---XNZVC\r\n", (unsigned int)cmd_result);
 //
                     if (sysreg_read(&cmd_result, 0x1) != TERM_OK) {
 
                         printf("err %s line: %d\r\n", __FILE__, __LINE__ );
                         return TERM_ERR;
                     }
-                    printf("  CPC %08X", cmd_result);
+                    printf("  CPC %08X", (unsigned int)cmd_result);
                     if (sysreg_read(&cmd_result, 0xD) != TERM_OK) {
                         printf("err %s line: %d\r\n", __FILE__, __LINE__ );
                         return TERM_ERR;
                     }
-                    printf("     SSP %08X", cmd_result);
+                    printf("     SSP %08X", (unsigned int)cmd_result);
                     if (sysreg_read(&cmd_result, 0xF) != TERM_OK) {
                         printf("err %s line: %d\r\n", __FILE__, __LINE__ );
                         return TERM_ERR;
                     }
-                    printf("     DFC %08X", cmd_result);
+                    printf("     DFC %08X", (unsigned int)cmd_result);
                     if (sysreg_read(&cmd_result, 0xB) != TERM_OK) {
                         printf("err %s line: %d\r\n", __FILE__, __LINE__ );
                         return TERM_ERR;
                     }
-                    printf("    %04X ", cmd_result);
+                    printf("    %04X ", (uint16_t)cmd_result);
                     for (uint32_t i = 0; i < 16; i++) {
                         cmd_result & (1 << (15-i)) ? printf("1") : printf("0");
                     }
@@ -545,19 +545,19 @@ uint8_t execute_bdm_cmd()
                         printf("err %s line: %d\r\n", __FILE__, __LINE__ );
                         return TERM_ERR;
                     }
-                    printf("  VBR %08X", cmd_result);
+                    printf("  VBR %08X", (unsigned int)cmd_result);
                     if (sysreg_read(&cmd_result, 0x8)!= TERM_OK) {
                         printf("err %s line: %d\r\n", __FILE__, __LINE__ );
                         return TERM_ERR;
                     }
-                    printf("   ATEMP %08X", cmd_result);
+                    printf("   ATEMP %08X", (unsigned int)cmd_result);
                     if (sysreg_read(&cmd_result, 0x9) != TERM_OK) {
                         printf("err %s line: %d\r\n", __FILE__, __LINE__ );
                         return TERM_ERR;
                     }
-                    printf("     FAR %08X\r\n", cmd_result);
+                    printf("     FAR %08X\r\n", (unsigned int)cmd_result);
 //
-                    printf(" !CONNNECTED:%d", PIN_NC.read());
+//                    printf(" !CONNNECTED:%d", PIN_NC.read());
                     printf(" POWER:%d", PIN_PWR.read());
                     printf(" !RESET:%d", PIN_RESET.read());
                     printf(" !BUSERR:%d", PIN_BERR.read());

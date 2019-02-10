@@ -33,3 +33,5 @@
 
 mbed_settings.py
 *.pyc
+.temp
+.mbed
