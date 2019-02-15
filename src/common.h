@@ -34,10 +34,11 @@ accept liability for any damage arising from its use.
 //#define IGNORE_VCC_PIN            ///< uncomment to ignore the VCC pin
 
 // constants
-#define FW_VERSION_MAJOR    0x1     ///< firmware version
-#define FW_VERSION_MINOR    0x6        
+#define FW_VERSION_MAJOR    0x0     ///< firmware version
+#define FW_VERSION_MINOR    0x1        
 
 #define CR 0x0D
+#define LF 0x0A
 #define NL 0x0A
 #define BELL 0x07
 
