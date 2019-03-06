@@ -38,6 +38,8 @@ uint8_t prep_t8_do(void);
 uint8_t dump_trionic(void);
 uint8_t flash_trionic(void);
 
+bool get_flash_id(uint8_t*, uint8_t*);
+
 #endif
 //-----------------------------------------------------------------------------
 //    EOF

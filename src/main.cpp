@@ -60,9 +60,8 @@ int main()
     // main loop
     *cmd_buffer = '\0';
     char ret;
+    printf("m3fbdm >") ;
     while (true) {
-        // read chars from USB
-        // send received messages to the pc over USB connection
         if (pc.readable()) {
             // turn Error LED off for next command
             led2 = 0;

@@ -21,6 +21,7 @@ accept liability for any damage arising from its use.
 *******************************************************************************/
 
 #include "bdmcpu32.h"
+#include "common.h"
 
 // constants
 #define MCU_SETTLE_TIME     10        ///< delay to let MCU switch modes, ms
@@ -40,17 +41,6 @@ accept liability for any damage arising from its use.
 #define BDM_CALL            0x0800    ///< function call
 #define BDM_RST             0x0400    ///< reset
 
-// system registers
-#define SREG_RPC            0x0
-#define SREG_PCC            0x1
-#define SREG_SR             0xb
-#define SREG_USP            0xc
-#define SREG_SSP            0xd
-#define SREG_SFC            0xe
-#define SREG_DFC            0xf
-#define SREG_ATEMP          0x8
-#define SREG_FAR            0x9
-#define SREG_VBR            0xa
 
 // BDM responses
 #define BDM_CMDCMPLTE       0x0000ffff    ///< command complete
@@ -68,6 +58,8 @@ accept liability for any damage arising from its use.
 #define RAM_BB_BASE 0x22000000
 #define PERIHERALS_BASE 0x40000000
 #define PERIHERALS_BB_BASE 0x42000000
+
+#define CHECK_BDM( ) if (!IN_BDM) { DEBUG_PRINTF("Not in BDM State\n"); return TERM_ERR; }
 
 //#define varBit(Variable,BitNumber) (*(uint32_t *) (RAM_BB_BASE | (((uint32_t)&Variable - RAM_BASE) << 5) | ((BitNumber) << 2)))
 //#define periphBit(Peripheral,BitNumber) (*(uint32_t *) (PERIHERALS_BB_BASE | (((uint32_t)&Peripheral - PERIHERALS_BASE) << 5) | ((BitNumber) << 2)))
@@ -172,10 +164,7 @@ uint8_t reset_chip()
 */
 uint8_t run_chip(const uint32_t* addr)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // set program counter
     if ((*addr > 0) && sysreg_write(SREG_RPC, addr) != TERM_OK) {
@@ -209,6 +198,7 @@ uint8_t restart_chip()
 {
     // not connected
     if (!IS_CONNECTED) {
+        printf("BDM is not connected\n") ;
         return TERM_ERR;
     }
 
@@ -371,10 +361,7 @@ uint8_t berr_input()
 */
 uint8_t memread_byte(uint8_t* result, const uint32_t* addr)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // read byte
     if (!bdm_read((uint32_t*)result, BDM_READ, addr)) {
@@ -398,10 +385,7 @@ uint8_t memread_byte(uint8_t* result, const uint32_t* addr)
 */
 uint8_t memread_word(uint16_t* result, const uint32_t* addr)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // read word
     if (!bdm_read((uint32_t*)result, BDM_READ + BDM_WORDSIZE, addr)) {
@@ -425,10 +409,7 @@ uint8_t memread_word(uint16_t* result, const uint32_t* addr)
 */
 uint8_t memread_long(uint32_t* result, const uint32_t* addr)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     //  read long word
     if (!bdm_read(result, BDM_READ + BDM_LONGSIZE, addr)) {
@@ -452,10 +433,7 @@ uint8_t memread_long(uint32_t* result, const uint32_t* addr)
 */
 uint8_t memdump_byte(uint8_t* result)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // dump byte
     if (!bdm_read((uint32_t*)result, BDM_DUMP, NULL)) {
@@ -479,10 +457,7 @@ uint8_t memdump_byte(uint8_t* result)
 */
 uint8_t memdump_word(uint16_t* result)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // dump word
     if (!bdm_read((uint32_t*)result, BDM_DUMP + BDM_WORDSIZE, NULL)) {
@@ -506,10 +481,7 @@ uint8_t memdump_word(uint16_t* result)
 */
 uint8_t memdump_long(uint32_t* result)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // dump long word
     if (!bdm_read(result, BDM_DUMP + BDM_LONGSIZE, NULL)) {
@@ -533,10 +505,7 @@ uint8_t memdump_long(uint32_t* result)
 */
 uint8_t memwrite_byte(const uint32_t* addr, uint8_t value)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // write byte
     if (!bdm_write(addr, BDM_WRITE, (uint32_t*)&value)) {
@@ -560,10 +529,7 @@ uint8_t memwrite_byte(const uint32_t* addr, uint8_t value)
 */
 uint8_t memwrite_word(const uint32_t* addr, uint16_t value)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // write word
     if (!bdm_write(addr, BDM_WRITE + BDM_WORDSIZE, (uint32_t*)&value)) {
@@ -587,10 +553,7 @@ uint8_t memwrite_word(const uint32_t* addr, uint16_t value)
 */
 uint8_t memwrite_long(const uint32_t* addr, const uint32_t* value)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // write long word
     if (!bdm_write(addr, BDM_WRITE + BDM_LONGSIZE, value)) {
@@ -614,10 +577,7 @@ uint8_t memwrite_long(const uint32_t* addr, const uint32_t* value)
 */
 uint8_t memfill_byte(uint8_t value)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // fill byte
     if (!bdm_write(NULL, BDM_FILL, (uint32_t*)&value)) {
@@ -641,10 +601,7 @@ uint8_t memfill_byte(uint8_t value)
 */
 uint8_t memfill_word(uint16_t value)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // fill word
     if (!IN_BDM || !bdm_write(NULL, BDM_FILL + BDM_WORDSIZE, (uint32_t*)&value)) {
@@ -668,10 +625,7 @@ uint8_t memfill_word(uint16_t value)
 */
 uint8_t memfill_long(const uint32_t* value)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // fill long word
     if (!bdm_write(NULL, BDM_FILL + BDM_LONGSIZE, value)) {
@@ -693,8 +647,7 @@ uint8_t memfill_long(const uint32_t* value)
 */
 uint8_t memread_byte_cmd(const uint32_t* addr)
 {
-
-    if (!IN_BDM) return TERM_ERR;
+    CHECK_BDM( ) ;
 
     // write command code
     if (!bdm_command(BDM_READ + BDM_BYTESIZE)) return TERM_ERR;
@@ -716,8 +669,7 @@ uint8_t memread_byte_cmd(const uint32_t* addr)
 */
 uint8_t memread_word_cmd(const uint32_t* addr)
 {
-
-    if (!IN_BDM) return TERM_ERR;
+    CHECK_BDM( ) ;
 
     // write command code
     bdm_clk(BDM_READ + BDM_WORDSIZE, CMD_BIT_COUNT);
@@ -741,7 +693,7 @@ uint8_t memread_word_cmd(const uint32_t* addr)
 uint8_t memread_long_cmd(const uint32_t* addr)
 {
 
-    if (!IN_BDM) return TERM_ERR;
+    CHECK_BDM( ) ;
 
     // write command code
     bdm_clk(BDM_READ + BDM_LONGSIZE, CMD_BIT_COUNT);
@@ -764,7 +716,7 @@ uint8_t memread_long_cmd(const uint32_t* addr)
 uint8_t memwrite_byte_cmd(const uint32_t* addr)
 {
 
-    if (!IN_BDM) return TERM_ERR;
+    CHECK_BDM( ) ;
 
     // write command code
     if (!bdm_command(BDM_WRITE + BDM_BYTESIZE)) return TERM_ERR;
@@ -787,7 +739,7 @@ uint8_t memwrite_byte_cmd(const uint32_t* addr)
 uint8_t memwrite_word_cmd(const uint32_t* addr)
 {
 
-    if (!IN_BDM) return TERM_ERR;
+    CHECK_BDM( ) ;
 
     // write command code
     bdm_clk(BDM_WRITE + BDM_WORDSIZE, CMD_BIT_COUNT);
@@ -811,7 +763,7 @@ uint8_t memwrite_word_cmd(const uint32_t* addr)
 uint8_t memwrite_long_cmd(const uint32_t* addr)
 {
 
-    if (!IN_BDM) return TERM_ERR;
+    CHECK_BDM( ) ;
 
     // write command code
     bdm_clk(BDM_WRITE + BDM_LONGSIZE, CMD_BIT_COUNT);
@@ -837,7 +789,7 @@ uint8_t memwrite_long_cmd(const uint32_t* addr)
 uint8_t memread_read_byte(uint8_t* result, const uint32_t* addr)
 {
 
-    if (!IN_BDM) return TERM_ERR;
+    CHECK_BDM( ) ;
     // write the optional address
     if (addr) {
         if (!bdm_address(addr)) return TERM_ERR;
@@ -859,7 +811,7 @@ uint8_t memread_read_byte(uint8_t* result, const uint32_t* addr)
 uint8_t memread_write_byte(uint8_t* result, const uint32_t* addr)
 {
 
-    if (!IN_BDM) return TERM_ERR;
+    CHECK_BDM( ) ;
     // write the optional address
     if (addr) {
         if (!bdm_address(addr)) return TERM_ERR;
@@ -881,7 +833,7 @@ uint8_t memread_write_byte(uint8_t* result, const uint32_t* addr)
 uint8_t memread_nop_byte(uint8_t* result, const uint32_t* addr)
 {
 
-    if (!IN_BDM) return TERM_ERR;
+    CHECK_BDM( ) ;
     // write the optional address
     if (addr) {
         if (!bdm_address(addr)) return TERM_ERR;
@@ -903,7 +855,7 @@ uint8_t memread_nop_byte(uint8_t* result, const uint32_t* addr)
 uint8_t memwrite_write_byte(const uint32_t* addr, uint8_t value)
 {
 
-    if (!IN_BDM) return TERM_ERR;
+    CHECK_BDM( ) ;
     // write the optional address
     if (addr) {
         if (!bdm_address(addr)) return TERM_ERR;
@@ -927,7 +879,7 @@ uint8_t memwrite_write_byte(const uint32_t* addr, uint8_t value)
 uint8_t memwrite_read_byte(const uint32_t* addr, uint8_t value)
 {
 
-    if (!IN_BDM) return TERM_ERR;
+    CHECK_BDM( ) ;
     // write the optional address
     if (addr) {
         if (!bdm_address(addr)) return TERM_ERR;
@@ -951,7 +903,7 @@ uint8_t memwrite_read_byte(const uint32_t* addr, uint8_t value)
 uint8_t memwrite_nop_byte(const uint32_t* addr, uint8_t value)
 {
 
-    if (!IN_BDM) return TERM_ERR;
+    CHECK_BDM( ) ;
     // write the optional address
     if (addr) {
         if (!bdm_address(addr)) return TERM_ERR;
@@ -1021,8 +973,7 @@ uint8_t memwrite_word_read_word(uint16_t* result, const uint32_t* addr, const ui
 */
 uint8_t memget_word(uint16_t* result)
 {
-
-    if (!IN_BDM) return TERM_ERR;
+    CHECK_BDM( ) ;
     // receive the response word
     return (bdm_get((uint32_t*)result, BDM_WORDSIZE, BDM_DUMP + BDM_WORDSIZE)) ? TERM_OK : TERM_ERR;
 }
@@ -1038,8 +989,7 @@ uint8_t memget_word(uint16_t* result)
 */
 uint8_t memget_long(uint32_t* result)
 {
-
-    if (!IN_BDM) return TERM_ERR;
+    CHECK_BDM( ) ;
     // receive the response words
     return (bdm_get(result, BDM_LONGSIZE, BDM_DUMP + BDM_LONGSIZE)) ? TERM_OK : TERM_ERR;
 }
@@ -1055,10 +1005,7 @@ uint8_t memget_long(uint32_t* result)
 */
 uint8_t sysreg_read(uint32_t* result, uint8_t reg)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // read register
     if (!bdm_read(result, BDM_RSREG + reg, NULL)) {
@@ -1080,10 +1027,7 @@ uint8_t sysreg_read(uint32_t* result, uint8_t reg)
 */
 uint8_t sysreg_write(uint8_t reg, const uint32_t* value)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // write register
     if (!bdm_write(NULL, BDM_WSREG + reg, value)) {
@@ -1106,13 +1050,11 @@ uint8_t sysreg_write(uint8_t reg, const uint32_t* value)
 */
 uint8_t adreg_read(uint32_t* result, uint8_t reg)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // read register
     if (!bdm_read(result, BDM_RDREG + reg, NULL)) {
+        DEBUG_PRINTF("bdm_read(%02x) failed\n", reg) ;
         // clear the interface and fail
         bdm_clear();
         return TERM_ERR;
@@ -1131,10 +1073,7 @@ uint8_t adreg_read(uint32_t* result, uint8_t reg)
 */
 uint8_t adreg_write(uint8_t reg, const uint32_t* value)
 {
-    // check state
-    if (!IN_BDM) {
-        return TERM_ERR;
-    }
+    CHECK_BDM( ) ;
 
     // write register
     if (!bdm_write(NULL, BDM_WRREG + reg, value)) {
@@ -1214,9 +1153,11 @@ bool bdm_read(uint32_t* result, uint16_t cmd, const uint32_t* addr)
 */
 bool bdm_write(const uint32_t* addr, uint16_t cmd, const uint32_t* value)
 {
+    DEBUG_PRINTF("bdm_write(%04x)\n", cmd) ;
     // write command code
     bdm_clk(cmd, CMD_BIT_COUNT);
     if (bdm_response > BDM_NOTREADY) {
+        DEBUG_PRINTF("BDM not ready 1: %08lx\n", bdm_response) ;
         return false;
     }
 
@@ -1225,11 +1166,13 @@ bool bdm_write(const uint32_t* addr, uint16_t cmd, const uint32_t* value)
         // first word
         bdm_clk((uint16_t)((*addr) >> 16), CMD_BIT_COUNT);
         if (bdm_response > BDM_NOTREADY) {
+            DEBUG_PRINTF("BDM not ready 2: %08lx\n", bdm_response) ;
             return false;
         }
         // second word
         bdm_clk((uint16_t)(*addr), CMD_BIT_COUNT);
         if (bdm_response > BDM_NOTREADY) {
+            DEBUG_PRINTF("BDM not ready 3: %08lx\n", bdm_response) ;
             return false;
         }
     }
@@ -1238,11 +1181,13 @@ bool bdm_write(const uint32_t* addr, uint16_t cmd, const uint32_t* value)
     if (cmd & BDM_LONGSIZE) {
         bdm_clk((uint16_t)((*value) >> 16), CMD_BIT_COUNT);
         if (bdm_response > BDM_NOTREADY) {
+            DEBUG_PRINTF("BDM not ready 4: %08lx\n", bdm_response) ;
             return false;
         }
     }
     bdm_clk((uint16_t)(*value), CMD_BIT_COUNT);
     if (bdm_response > BDM_NOTREADY) {
+        DEBUG_PRINTF("BDM not ready 5: %08lx\n", bdm_response) ;
         return false;
     }
 
@@ -1401,13 +1346,12 @@ void bdm_clk(uint16_t value, uint8_t num_bits)
 */
 
 void bdm_clk_slow(uint16_t value, uint8_t num_bits) {
-//    PIN_BKPT.output();
-    PIN_DSI.output();
+    // PIN_BKPT.output();
+    //PIN_DSI.output();
     // clock the value via BDM
     bdm_response = ((uint32_t)value) << (32 - num_bits);
 //    bool dsi;
     while (num_bits--) {
-
         // falling edge on BKPT/DSCLK
         PIN_BKPT.write(0);
         // set DSI bit
@@ -1416,15 +1360,16 @@ void bdm_clk_slow(uint16_t value, uint8_t num_bits) {
         // read DSO bit
         bdm_response |= PIN_DSO.read();
         // short delay
-//        for (uint8_t c = 1; c; c--);
-//        wait_us(1);
+        wait_us(5) ;
+        //for (uint8_t c = 1; c; c--);        wait_us(1);
         // rising edge on BKPT/DSCLK
         PIN_BKPT.write(1);
+        wait_us(5) ;
         // short delay
-//        for (uint8_t c = 1; c; c--);
-//        wait_us(1);
+        //for (uint8_t c = 1; c; c--);        wait_us(1);
     }
-    PIN_DSI.input();
+    // PIN_DSI.input();
+    // DEBUG_PRINTF("FINAL bdm_response: %08lx\n", bdm_response) ;
 }
 //
 

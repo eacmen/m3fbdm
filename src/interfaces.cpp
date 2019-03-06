@@ -30,17 +30,34 @@ Timer timeout;
 // Need to create this to be able to read and write files on the mbed 'disk'
 // SDFileSystem sdard(SD_MOSI, SD_MISO, SD_SCLK, SD_CS, "sdcard");
 
-// MASTER BDM1 Connector Pinout
+// Global variables (default to BDM1 - Master)
 DigitalInOut    PIN_BERR(PTB11);     // double bus fault input - will be an input when it is working properly
 DigitalInOut    PIN_BKPT(PTE5);      // breakpoint/serial clock
 DigitalIn       PIN_FREEZE(PTB10);   // freeze signal
 DigitalInOut    PIN_RESET(PTE4);     // reset signal
-DigitalInOut    PIN_DSI(PTE3);               // data input (to ECU) signal
-DigitalIn       PIN_PWR(PTB0);               // power supply
-DigitalIn       PIN_DSO(PTE2);               // data output (from ECU) signal
+DigitalOut    PIN_DSI(PTE3);       // data input (to ECU) signal
+DigitalIn       PIN_PWR(PTB0);       // power supply
+DigitalIn       PIN_DSO(PTE2);       // data output (from ECU) signal
 
-// DigitalIn       PIN_NC(PTA1);                // connection signal
-// DigitalIn       PIN_DS(p27);                // data strobe signal (not used)
+
+// MASTER BDM1 Connector Pinout
+DigitalInOut    BDM1_PIN_BERR(PTB11);     // double bus fault input - will be an input when it is working properly
+DigitalInOut    BDM1_PIN_BKPT(PTE5);      // breakpoint/serial clock
+DigitalIn       BDM1_PIN_FREEZE(PTB10);   // freeze signal
+DigitalInOut    BDM1_PIN_RESET(PTE4);     // reset signal
+DigitalOut    BDM1_PIN_DSI(PTE3);       // data input (to ECU) signal
+DigitalIn       BDM1_PIN_PWR(PTB0);       // power supply
+DigitalIn       BDM1_PIN_DSO(PTE2);       // data output (from ECU) signal
+
+// SLAVE BDM2 Connector Pinout
+DigitalInOut    BDM2_PIN_BERR(PTB9);     // double bus fault input - will be an input when it is working properly
+DigitalInOut    BDM2_PIN_BKPT(PTE29);      // breakpoint/serial clock
+DigitalIn       BDM2_PIN_FREEZE(PTB8);   // freeze signal
+DigitalInOut    BDM2_PIN_RESET(PTE23);     // reset signal
+DigitalOut    BDM2_PIN_DSI(PTE22);       // data input (to ECU) signal
+DigitalIn       BDM2_PIN_PWR(PTB2);       // power supply
+DigitalIn       BDM2_PIN_DSO(PTE21);       // data output (from ECU) signal
+
 
 //LEDS
 

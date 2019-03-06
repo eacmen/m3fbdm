@@ -56,6 +56,7 @@ accept liability for any damage arising from its use.
 #define CMD_DUMP            'd'             ///< dumps memory contents
 #define CMD_ERASE           'E'             ///< erase entire flash memory            
 #define CMD_WRITE           'w'             ///< writes to flash memory
+#define CMD_CHIPID          'i'             ///< ID Flash Chip
 
 #define CMDGROUP_MEMORY     'm'             ///< target MCU memory commands
 #define CMD_READBYTE        'b'             ///< read byte from memory
@@ -81,6 +82,10 @@ accept liability for any damage arising from its use.
 #define CMDGROUP_TRIONIC    'T'
 #define CMD_TRIONICDUMP     'D'             ///< dumps memory contents
 #define CMD_TRIONICWRITE    'F'             ///< writes to flash memory
+#define CMD_TRIONICBDM1     '1'             ///< writes to flash memory
+#define CMD_TRIONICBDM2     '2'             ///< writes to flash memory
+
+
 
 // static variables
 static char cmd_buffer[CMD_BUF_LENGTH];     ///< command string buffer
@@ -124,8 +129,10 @@ void bdm()
     //PIN_PWR.mode(PullDown);
 //    PIN_NC.mode(PullUp);
 //    PIN_DS.mode(PullUp);
-    PIN_FREEZE.mode(PullUp);
-    PIN_DSO.mode(PullUp);
+    BDM1_PIN_FREEZE.mode(PullUp);
+    BDM1_PIN_DSO.mode(PullUp);
+    BDM2_PIN_FREEZE.mode(PullUp);
+    BDM2_PIN_DSO.mode(PullUp);
 
     verify_flash = true;
 
@@ -133,6 +140,8 @@ void bdm()
     *cmd_buffer = '\0';
     char ret;
     char rx_char;
+    printf("m3fbdm [BDM] > ") ;
+
     while (true) {
         // read chars from USB
         if (pc.readable()) {
@@ -142,12 +151,13 @@ void bdm()
             switch (rx_char) {
                     // 'ESC' key to go back to mbed Just4Trionic 'home' menu
                 case '\e':
+                    printf("ESC\n") ;
                     reset_chip();
                     return;
                     // end-of-command reached
-                case TERM_OK :
+                case CR:
                     // execute command and return flag via USB
-                    ret = execute_bdm_cmd();
+                    ret = execute_bdm_cmd( );
                     pc.putc(ret);
                     // reset command buffer
                     *cmd_buffer = '\0';
@@ -156,10 +166,14 @@ void bdm()
                     ret == TERM_OK ? led1 = 1 : led2 = 1;
                     break;
                     // another command char
+                case LF:
+                    // nop
+                    break ;
                 default:
                     // store in buffer if space permits
                     if (StrLen(cmd_buffer) < CMD_BUF_LENGTH - 1) {
                         StrAddc(cmd_buffer, rx_char);
+                        pc.putc(rx_char) ;
                     }
                     break;
             }
@@ -179,6 +193,8 @@ uint8_t execute_bdm_cmd()
     uint8_t cmd_length = strlen(cmd_buffer);
     char cmd = *(cmd_buffer + 1);
 
+    bdm_clk_mode(SLOW);
+
     // command groups
     switch (*cmd_buffer) {
             // adapter commands
@@ -194,12 +210,13 @@ uint8_t execute_bdm_cmd()
 
                     // get momentary status of BDM pins 0...5 (for debugging)
                 case CMD_PINSTATUS:
-//                    printf("%02x", (BDM_PIN & 0x3f));
-                    printf("PWR %d, ", PIN_PWR.read());
-//                    printf("NC %d, ", PIN_NC.read());
-//                    printf("DS %d, ", PIN_DS.read());
-                    printf("FREEZE %d, ", PIN_FREEZE.read());
-                    printf("DSO %d, ", PIN_DSO.read());
+                    printf(" POWER:%d", PIN_PWR.read());
+                    printf(" !RESET:%d", PIN_RESET.read());
+                    printf(" !BUSERR:%d", PIN_BERR.read());
+                    printf(" BKPT/DSCLK:%d", PIN_BKPT.read());
+                    printf(" FREEZE:%d", PIN_FREEZE.read());
+                    printf(" DSO:%d", PIN_DSO.read());
+                    printf(" DSI:%d", PIN_DSI.read());
                     printf("\r\n");
                     return TERM_OK;
 
@@ -297,6 +314,13 @@ uint8_t execute_bdm_cmd()
                     CHECK_ARGLENGTH(14);
                     GET_NUMBER(&cmd_addr, 6, 8);
                     return write_flash(cmd_buffer + 2, &cmd_addr);
+
+                case CMD_CHIPID:
+                    CHECK_ARGLENGTH(0) ;
+                    uint8_t make ;
+                    uint8_t type ;
+                    bool ret = get_flash_id(&make, &type) ;
+                    printf("FLASH id make: %02x, type: %02x\r\n", make, type);
             }
             break;
 
@@ -586,6 +610,18 @@ uint8_t execute_bdm_cmd()
                 case CMD_TRIONICWRITE:
                     CHECK_ARGLENGTH(0);
                     return flash_trionic();
+
+                case CMD_TRIONICBDM1:
+                    CHECK_ARGLENGTH(0);
+                    printf("Selecting BDM1(Master)\n");
+                    SELECT_BDM1();
+                    return TERM_OK ;
+                
+                case CMD_TRIONICBDM2:
+                    CHECK_ARGLENGTH(0);
+                    printf("Selecting BDM2(Slave)\n");
+                    SELECT_BDM2();
+                    return TERM_OK ;
             }
 
             // show help for BDM commands

@@ -41,6 +41,18 @@ accept liability for any damage arising from its use.
 #define IS_RUNNING          (PIN_RESET && !IN_BDM)
 //#define IS_RUNNING          ((bool)((LPC_GPIO2->FIOPIN) & (1 << 3)) && !IN_BDM)          // PIN_RESET is P23 P2.3
 
+// system registers
+#define SREG_RPC            0x0
+#define SREG_PCC            0x1
+#define SREG_SR             0xb
+#define SREG_USP            0xc
+#define SREG_SSP            0xd
+#define SREG_SFC            0xe
+#define SREG_DFC            0xf
+#define SREG_ATEMP          0x8
+#define SREG_FAR            0x9
+#define SREG_VBR            0xa
+
 // MCU management
 uint8_t stop_chip();
 uint8_t reset_chip();

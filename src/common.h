@@ -18,11 +18,12 @@ accept liability for any damage arising from its use.
 //#include <stdint.h>
 //#include <stdbool.h>
 
-#undef DEBUG
 #ifndef DEBUG
-//#define DEBUG 1
+#define DEBUG 1
 //#define DEBUG
 #endif
+
+#define DEBUG_PRINTF(fmt, ...) do { if (DEBUG) printf("%s:%d(): " fmt, __FILE__, __LINE__, ##__VA_ARGS__ ); } while (0) 
 
 #include "mbed.h"
 

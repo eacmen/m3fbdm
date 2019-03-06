@@ -26,14 +26,51 @@ extern Timer            timer;
 extern Timer            timeout;
 
 extern DigitalIn        PIN_PWR;                // power supply
-// extern DigitalIn        PIN_NC;                 // connection signal
 extern DigitalInOut     PIN_BERR;               // double bus fault input - will be an input when it is working properly
 extern DigitalInOut     PIN_BKPT;               // breakpoint/serial clock
 extern DigitalInOut     PIN_RESET;              // reset signal
-extern DigitalInOut     PIN_DSI;                // data input (to ECU) signal
+extern DigitalOut     PIN_DSI;                // data input (to ECU) signal
 extern DigitalIn        PIN_DSO;                // data output (from ECU) signal
 extern DigitalIn        PIN_FREEZE;             // freeze signal
-// extern DigitalIn        PIN_DS;                 // data strobe signal (not used)
+
+extern DigitalIn        BDM1_PIN_PWR;                // power supply
+extern DigitalInOut     BDM1_PIN_BERR;               // double bus fault input - will be an input when it is working properly
+extern DigitalInOut     BDM1_PIN_BKPT;               // breakpoint/serial clock
+extern DigitalInOut     BDM1_PIN_RESET;              // reset signal
+extern DigitalOut     BDM1_PIN_DSI;                // data input (to ECU) signal
+extern DigitalIn        BDM1_PIN_DSO;                // data output (from ECU) signal
+extern DigitalIn        BDM1_PIN_FREEZE;             // freeze signal
+
+extern DigitalIn        BDM2_PIN_PWR;                // power supply
+extern DigitalInOut     BDM2_PIN_BERR;               // double bus fault input - will be an input when it is working properly
+extern DigitalInOut     BDM2_PIN_BKPT;               // breakpoint/serial clock
+extern DigitalInOut     BDM2_PIN_RESET;              // reset signal
+extern DigitalOut     BDM2_PIN_DSI;                // data input (to ECU) signal
+extern DigitalIn        BDM2_PIN_DSO;                // data output (from ECU) signal
+extern DigitalIn        BDM2_PIN_FREEZE;             // freeze signal
+
+
+
+#define SELECT_BDM1( ) do { \
+  PIN_PWR=BDM1_PIN_PWR; \
+  PIN_BERR=BDM1_PIN_BERR; \
+  PIN_BKPT=BDM1_PIN_BKPT; \
+  PIN_RESET=BDM1_PIN_RESET; \
+  PIN_DSI=BDM1_PIN_DSI; \
+  PIN_DSO=BDM1_PIN_DSO; \
+  PIN_FREEZE=BDM1_PIN_FREEZE; \
+  } while(0)
+
+#define SELECT_BDM2( ) do { \
+  PIN_PWR=BDM2_PIN_PWR; \
+  PIN_BERR=BDM2_PIN_BERR; \
+  PIN_BKPT=BDM2_PIN_BKPT; \
+  PIN_RESET=BDM2_PIN_RESET; \
+  PIN_DSI=BDM2_PIN_DSI; \
+  PIN_DSO=BDM2_PIN_DSO; \
+  PIN_FREEZE=BDM2_PIN_FREEZE; \
+  } while(0)
+
 
 //LEDS
 

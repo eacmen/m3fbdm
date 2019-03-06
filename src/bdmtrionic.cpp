@@ -141,11 +141,17 @@ uint8_t dump_trionic()
 
     // Configure the MC68332 register values to prepare for flashing
     printf("I am trying to discover what type of Trionic ECU I am connected to...\r\n");
-    prep_t5_do();
+    if(TERM_ERR == prep_t5_do()) {
+        DEBUG_PRINTF("prep T5 failed\n") ;
+        return TERM_ERR ;
+    }
     // Work out what type of FLASH chips we want to make a dump file for
     uint8_t make;
     uint8_t type;
-    get_flash_id(&make, &type);
+    if(!get_flash_id(&make, &type)) {
+        DEBUG_PRINTF("could not get flash chip ID\n") ;
+        return TERM_ERR ;
+    }
     // set up chip-specific functions
     bool (*reset_func)();
     uint32_t flash_size;
@@ -193,7 +199,7 @@ uint8_t dump_trionic()
             break;
         default:
             // unknown flash type
-            printf("I could not work out what FLASH chips or TRIONIC ECU I am connected to :-(\r\n");
+            printf("I could not work out what FLASH chips or TRIONIC ECU I am connected to :-( (make: %02x type: %02x)\r\n", make, type);
             return TERM_ERR;
     }
 
@@ -1728,18 +1734,29 @@ program the FLASH chips
 
 uint8_t prep_t5_do(void)
 {
+    SELECT_BDM1( ) ;
+    uint8_t retval ;
     // Make sure that BDM clock is SLOW
     bdm_clk_mode(SLOW);
     // reset and freeze the MC68332/377 chip
-    if (restart_chip() != TERM_OK) return TERM_ERR;
+    if ( (retval = restart_chip()) != TERM_OK) {
+        DEBUG_PRINTF("BDM1 restart_chip( ) failed: %02x\n", retval) ;
+        return retval;
+    }
 
     // define some variables to store address and data values
     uint32_t long_value = 0x05;
     uint16_t verify_value;
 
     // set the 'fc' registers to allow supervisor mode access
-    if (sysreg_write(0x0e, &long_value) != TERM_OK) return TERM_ERR;
-    if (sysreg_write(0x0f, &long_value) != TERM_OK) return TERM_ERR;
+    if ( (retval = sysreg_write(SREG_SFC, &long_value)) != TERM_OK) {
+        DEBUG_PRINTF("sysreg_write failed: %02x\n", retval) ;
+        return TERM_ERR;
+    }
+    if (sysreg_write(SREG_DFC, &long_value) != TERM_OK) {
+        DEBUG_PRINTF("sysreg_write failed: %02x\n", retval) ;
+        return TERM_ERR;
+    }
 
     // Read MC68332/377 Module Control Register (SIMCR/MCR)
     // and use the value to work out if ECU is a T5/7 or a T8
