@@ -38,3 +38,4 @@ mbed_settings.py
 
 mbed
 SDFileSystem
+.DS_Store

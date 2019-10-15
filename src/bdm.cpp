@@ -140,7 +140,25 @@ void bdm()
     *cmd_buffer = '\0';
     char ret;
     char rx_char;
-    printf("m3fbdm [BDM] > ") ;
+    pc.printf("Restarting chip\r\n");
+    ret = restart_chip( ) ;
+    pc.printf("[%s] [%s] m3fbdm > ", (ret == TERM_OK ? "0" : "-1"), (IN_BDM ? "BDM" : "!BDM")) ;
+
+    // define some variables to store address and data values
+    uint32_t long_value = 0x05;
+    uint16_t verify_value;
+    uint8_t retval ;
+
+    // set the 'fc' registers to allow supervisor mode access
+    pc.printf("Setting SFC register\r\n");
+    if ( (retval = sysreg_write(SREG_SFC, &long_value)) != TERM_OK) {
+        pc.printf("sysreg_write failed: %02x\n", retval) ;
+    }
+
+    pc.printf("Setting DFC register\r\n");
+    if (sysreg_write(SREG_DFC, &long_value) != TERM_OK) {
+        pc.printf("sysreg_write failed: %02x\n", retval) ;
+    }
 
     while (true) {
         // read chars from USB
@@ -151,26 +169,22 @@ void bdm()
             switch (rx_char) {
                     // 'ESC' key to go back to mbed Just4Trionic 'home' menu
                 case '\e':
-                    printf("ESC\n") ;
+                    pc.printf("ESC\r\n") ;
                     reset_chip();
                     return;
-                    // end-of-command reached
                 case CR:
-                    // execute command and return flag via USB
+                    pc.putc(CR);
+                    pc.putc(LF);
                     ret = execute_bdm_cmd( );
-                    pc.putc(ret);
-                    // reset command buffer
-                    *cmd_buffer = '\0';
-                    // light up LED
-//                    ret == TERM_OK ? led_on(LED_ACT) : led_on(LED_ERR);
                     ret == TERM_OK ? led1 = 1 : led2 = 1;
+                    pc.printf("[%s] [BDM] m3fbdm > ", (ret == TERM_OK ? "0" : "-1")) ;
+
+                    *cmd_buffer = '\0';                    
                     break;
-                    // another command char
                 case LF:
                     // nop
                     break ;
                 default:
-                    // store in buffer if space permits
                     if (StrLen(cmd_buffer) < CMD_BUF_LENGTH - 1) {
                         StrAddc(cmd_buffer, rx_char);
                         pc.putc(rx_char) ;

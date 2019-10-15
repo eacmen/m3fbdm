@@ -85,6 +85,7 @@ bool run_bdm_driver(uint32_t addr, uint32_t maxtime);
 
 uint8_t dump_flash(const uint32_t* start_addr, const uint32_t* end_addr)
 {
+    pc.printf("Dumping flash from %08X to %08X\r\n", *start_addr, *end_addr) ;
 
     // check parametres
     if (*start_addr > *end_addr) {
@@ -95,7 +96,7 @@ uint8_t dump_flash(const uint32_t* start_addr, const uint32_t* end_addr)
     uint32_t curr_addr = *start_addr;
     uint32_t value;
 
-    while ((curr_addr < *end_addr) && (pc.getc() != TERM_BREAK)) {
+    while ((curr_addr < *end_addr) && (!pc.readable( ) || pc.getc() != TERM_BREAK)) {
         // read long word
         if (curr_addr > *start_addr) {
             if (memdump_long(&value) != TERM_OK) {
@@ -108,13 +109,10 @@ uint8_t dump_flash(const uint32_t* start_addr, const uint32_t* end_addr)
         }
 
         // send memory value to host
-        printf("%08X", (unsigned)value);
-        printf("\r\n");
+        pc.printf("%08X\r\n", (unsigned)value);
 
         // add the terminating character
         if (curr_addr < *end_addr - 4) {
-            pc.putc(TERM_OK);
-            // light up the activity LED
             ACTIVITYLEDON;
         }
 

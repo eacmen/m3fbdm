@@ -59,7 +59,7 @@ accept liability for any damage arising from its use.
 #define PERIHERALS_BASE 0x40000000
 #define PERIHERALS_BB_BASE 0x42000000
 
-#define CHECK_BDM( ) if (!IN_BDM) { DEBUG_PRINTF("Not in BDM State\n"); return TERM_ERR; }
+#define CHECK_BDM( ) if (!IN_BDM) { DEBUG_PRINTF("Not in BDM State\r\n"); return TERM_ERR; }
 
 //#define varBit(Variable,BitNumber) (*(uint32_t *) (RAM_BB_BASE | (((uint32_t)&Variable - RAM_BASE) << 5) | ((BitNumber) << 2)))
 //#define periphBit(Peripheral,BitNumber) (*(uint32_t *) (PERIHERALS_BB_BASE | (((uint32_t)&Peripheral - PERIHERALS_BASE) << 5) | ((BitNumber) << 2)))
@@ -1050,7 +1050,7 @@ uint8_t sysreg_write(uint8_t reg, const uint32_t* value)
 */
 uint8_t adreg_read(uint32_t* result, uint8_t reg)
 {
-    CHECK_BDM( ) ;
+    // CHECK_BDM( ) ;
 
     // read register
     if (!bdm_read(result, BDM_RDREG + reg, NULL)) {
@@ -1153,7 +1153,6 @@ bool bdm_read(uint32_t* result, uint16_t cmd, const uint32_t* addr)
 */
 bool bdm_write(const uint32_t* addr, uint16_t cmd, const uint32_t* value)
 {
-    DEBUG_PRINTF("bdm_write(%04x)\n", cmd) ;
     // write command code
     bdm_clk(cmd, CMD_BIT_COUNT);
     if (bdm_response > BDM_NOTREADY) {

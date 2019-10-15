@@ -23,7 +23,7 @@ accept liability for any damage arising from its use.
 //#define DEBUG
 #endif
 
-#define DEBUG_PRINTF(fmt, ...) do { if (DEBUG) printf("%s:%d(): " fmt, __FILE__, __LINE__, ##__VA_ARGS__ ); } while (0) 
+#define DEBUG_PRINTF(fmt, ...) do { if (DEBUG) pc.printf("%s:%d(): " fmt, __FILE__, __LINE__, ##__VA_ARGS__ ); } while (0) 
 
 #include "mbed.h"
 

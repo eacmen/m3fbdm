@@ -29,7 +29,7 @@ extern DigitalIn        PIN_PWR;                // power supply
 extern DigitalInOut     PIN_BERR;               // double bus fault input - will be an input when it is working properly
 extern DigitalInOut     PIN_BKPT;               // breakpoint/serial clock
 extern DigitalInOut     PIN_RESET;              // reset signal
-extern DigitalOut     PIN_DSI;                // data input (to ECU) signal
+extern DigitalOut       PIN_DSI;                // data input (to ECU) signal
 extern DigitalIn        PIN_DSO;                // data output (from ECU) signal
 extern DigitalIn        PIN_FREEZE;             // freeze signal
 
@@ -37,7 +37,7 @@ extern DigitalIn        BDM1_PIN_PWR;                // power supply
 extern DigitalInOut     BDM1_PIN_BERR;               // double bus fault input - will be an input when it is working properly
 extern DigitalInOut     BDM1_PIN_BKPT;               // breakpoint/serial clock
 extern DigitalInOut     BDM1_PIN_RESET;              // reset signal
-extern DigitalOut     BDM1_PIN_DSI;                // data input (to ECU) signal
+extern DigitalOut       BDM1_PIN_DSI;                // data input (to ECU) signal
 extern DigitalIn        BDM1_PIN_DSO;                // data output (from ECU) signal
 extern DigitalIn        BDM1_PIN_FREEZE;             // freeze signal
 
@@ -45,7 +45,7 @@ extern DigitalIn        BDM2_PIN_PWR;                // power supply
 extern DigitalInOut     BDM2_PIN_BERR;               // double bus fault input - will be an input when it is working properly
 extern DigitalInOut     BDM2_PIN_BKPT;               // breakpoint/serial clock
 extern DigitalInOut     BDM2_PIN_RESET;              // reset signal
-extern DigitalOut     BDM2_PIN_DSI;                // data input (to ECU) signal
+extern DigitalOut       BDM2_PIN_DSI;                // data input (to ECU) signal
 extern DigitalIn        BDM2_PIN_DSO;                // data output (from ECU) signal
 extern DigitalIn        BDM2_PIN_FREEZE;             // freeze signal
 

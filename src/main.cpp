@@ -60,26 +60,28 @@ int main()
     // main loop
     *cmd_buffer = '\0';
     char ret;
-    printf("m3fbdm >") ;
+    pc.printf("[0] m3fbdm >") ;
     while (true) {
         if (pc.readable()) {
             // turn Error LED off for next command
             led2 = 0;
             rx_char = pc.getc();
             switch (rx_char) {
-                    // end-of-command reached
                 case CR :
+                    pc.putc(CR);
+                    pc.putc(LF);
+
                     // execute command and return flag via USB
                     timer.reset();
                     timer.start();
                     ret = execute_just4trionic_cmd();
+                    ret == TERM_OK ? led1 = 1 : led2 = 1;
+
                     show_just4trionic_help();
-                    pc.putc(ret);
+                    
+                    pc.printf("[%s] m3fbdm >", (ret == TERM_OK ? "0" : "-1")) ;
                     // reset command buffer
                     *cmd_buffer = '\0';
-                    // light up LED
-//                    ret == TERM_OK ? led_on(LED_ACT) : led_on(LED_ERR);
-                    ret == TERM_OK ? led1 = 1 : led2 = 1;
                     break;
                     // another command char
                 case LF:
